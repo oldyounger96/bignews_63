@@ -1,3 +1,11 @@
+<!--
+ * @Author: your name
+ * @Date: 2020-11-20 20:25:01
+ * @LastEditTime: 2020-11-20 21:11:06
+ * @LastEditors: Please set LastEditors
+ <!-- * @Description: In User Settings Edit -->
+* @FilePath: \大事件Day1\预习代码\bignews_63\admin\index.html
+-->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -54,5 +62,25 @@
 
         </div>
     </div>
+
+    <script>
+        // 入口函数
+        $(function () {
+            // 1.一进到后台首页,就应该获取登录的管理员的个人信息,显示在页面上
+            // 1.1 发送ajax请求,获取个人信息
+            $.ajax({
+                url: 'http://localhost:8080/api/v1/admin/user/info',
+                data: {
+                    nickname: 1231,
+                    userPic: 1231
+                },
+                success: function (backData) {
+                    console.log(backData);
+                }
+            })
+            // 1.2 个人信息显示在页面上
+        })
+    </script>
 </body>
+
 </html>
