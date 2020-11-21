@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2020-11-21 15:59:51
- * @LastEditTime: 2020-11-21 20:32:52
+ * @LastEditTime: 2020-11-21 21:10:49
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \大事件Day1e:\111前端学习集合\大事件(天)\大事件Day2\bignews_63\admin\article_category.html
@@ -107,17 +107,20 @@
         $(function () {
             // 第一个需求:一进到这个文章类别里面,就要显示所有的文章类别
             // 1.1 发送ajax请求,获取到所有的文章类别
-            $.ajax({
-                url: BigNew.category_list,
-                success: function (backData) {
-                    // console.log(backData);
-                    if (backData.code == 200) {
-                        // 1.2 通过模板引擎的方式,渲染到页面上
-                        let reshtml = template('temp', backData)
-                        $('tbody').html(reshtml)
+            function getData() {
+                $.ajax({
+                    url: BigNew.category_list,
+                    success: function (backData) {
+                        // console.log(backData);
+                        if (backData.code == 200) {
+                            // 1.2 通过模板引擎的方式,渲染到页面上
+                            let reshtml = template('temp', backData)
+                            $('tbody').html(reshtml)
+                        }
                     }
-                }
-            })
+                })
+            }
+            getData()
 
             // 2. 到底是新增分类按钮,还是编辑按钮 来弹出模态框
             // show.bs.modal	这个事件是在模态框显示的时候立即触发该事件。
@@ -138,9 +141,45 @@
                 }
             })
 
+            // 3.给模态框中的 新增/编辑 按钮设置点击事件
+            $('#btnAddText').on('click', function () {
+                // 判断是点的新增,还是点的编辑:用类或者用text都可以
+                if ($(this).hasClass('btn-success')) {
+                    // 新增
+                    let newName = $('#recipient-name').val().trim()
+                    let nickName = $('#message-text').val().trim()
+                    // 非空判断
+                    if (newName == '' || nickName == '') {
+                        alert('输入不能为空')
+                        return
+                    }
+                    $.ajax({
+                        type: 'post',
+                        url: BigNew.category_add,
+                        data: {
+                            name: newName,
+                            slug: nickName
+                        },
+                        success: function (backData) {
+                            console.log(backData);
+                            // let reshtml = template('temp', backData)
+                            // $('tbody').html(reshtml)
+                            if (backData.code == 201) {
+                                alert('新增成功')
+                                // 更新页面中的数据
+                                getData()
+                                // 隐藏模态框
+                                // 清空模态框中的内容
+                                $('#message-text').val('')
+                                $('#recipient-name').val('')
+                                $('#myModal').modal('hide')
+                            }
+                        }
+                    })
+                } else {
+                    // 编辑
 
-            $('tbody').on('click', '.btn-danger', function () {
-                $(this).parent().parent().remove()
+                }
             })
 
         })
