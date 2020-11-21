@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2020-11-20 20:25:01
- * @LastEditTime: 2020-11-21 11:08:29
+ * @LastEditTime: 2020-11-21 11:21:17
  * @LastEditors: Please set LastEditors
  <!-- * @Description: In User Settings Edit -->
 * @FilePath: \大事件Day1\预习代码\bignews_63\admin\index.html
@@ -72,18 +72,28 @@
             // let xhr = new XMLHttpRequest();
             // xhr.open('get', 'http://localhost:8080/api/v1/admin/user/info')
             // // 如何把token给带过去
-            // 键写什么右后端决定,值就是你localStorage里面的token
+            // 键写什么右后端决定,值就是你localStorage里面保存的token
             // xhr.setRequestHeader('Authorization', localStorage.getItem('token'))
             // xhr.onload = function () {
             //     console.log(xhr.response);
             // }
             // xhr.send()
+
+            // 每一个页面发送ajax请求之前都要写这个代码,那干脆
+            // $.ajaxSetup({
+            //     // 发送请求前运行的函数
+            //     beforeSend: function (xhr) {
+            //         // 那就可以在这里写设置请求头的代码
+            //         xhr.setRequestHeader('Authorization', localStorage.getItem('token'))
+            //     }
+            // })
+
             // JQuery发请求
             $.ajax({
                 url: 'http://localhost:8080/api/v1/admin/user/info',
-                headers: {
-                    Authorization: localStorage.getItem('token')
-                },
+                // headers: {
+                //     Authorization: localStorage.getItem('token')
+                // },
                 success: function (backData) {
                     if (backData.code == 200) {
                         // console.log(backData);
@@ -94,6 +104,14 @@
                 }
             })
             // 1.2 个人信息显示在页面上
+
+            // 除了登录接口,其他后台接口认证统一使用 token 认证
+            // 也就是说除了登录每一个后台接口都要使用 设置请求头的 方式来发送token来验证身份
+            // 如果一个页面有十几个请求，那这每一个请求都要设置请求头，就会很烦
+            // 我们就想能不能在这个页面上设置一个什么玩意儿，每次发送ajax请求之前都回去调用这么个玩意儿
+            // 
+            // $.ajaxSetup() 方法为将来的AJAX请求设置默认值
+
         })
     </script>
 </body>
