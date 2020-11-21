@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2020-11-20 20:25:01
- * @LastEditTime: 2020-11-20 21:17:16
+ * @LastEditTime: 2020-11-21 10:16:47
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \大事件Day1\预习代码\bignews_63\admin\login.html
@@ -94,25 +94,26 @@
             password: password
           },
           success: function (backData) {
+            // alert(backData.msg)
             // console.log(backData);
             // 1.6 如果账号密码没有问题,提示一下登录成功,跳转到首页
             if (backData.code == 200) {
-              // alert('登录成功')
-              $('#myModal').modal()
-              $('.modal-body>p').text(backData.msg)
-              // 页面跳转应该放在模态框关闭事件里面
               $('#myModal').on('hidden.bs.modal', function (e) {
+                // alert('登录成功')
+                // $('#myModal').modal()
+                // $('.modal-body>p').text(backData.msg)
+                // 页面跳转应该放在模态框关闭事件里面
                 // 把服务器返回回来的Token令牌给保存起来
                 localStorage.setItem('token', backData.token)
                 // do something...
                 window.location = './index.html'
+                // location = './index.html'
               })
-              // 1.7 如果账号密码有误,提示一下
-            } else {
-              // alert(backData.msg)
-              $('#myModal').modal()
-              $('.modal-body>p').text(backData.msg)
             }
+            $('.modal-body>p').text(backData.msg)
+            $('#myModal').modal()
+            // 1.7 如果账号密码有误,提示一下
+
           }
         })
       })
