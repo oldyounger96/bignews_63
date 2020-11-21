@@ -1,5 +1,13 @@
 /*
  * @Author: your name
+ * @Date: 2020-11-21 15:59:51
+ * @LastEditTime: 2020-11-21 16:04:59
+ * @LastEditors: your name
+ * @Description: In User Settings Edit
+ * @FilePath: \大事件Day1e:\111前端学习集合\大事件(天)\大事件Day2\bignews_63\admin\js\http.js
+ */
+/*
+ * @Author: your name
  * @Date: 2020-11-21 11:59:37
  * @LastEditTime: 2020-11-21 11:59:48
  * @LastEditors: Please set LastEditors
