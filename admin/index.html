@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2020-11-20 20:25:01
- * @LastEditTime: 2020-11-20 21:11:06
+ * @LastEditTime: 2020-11-21 11:08:29
  * @LastEditors: Please set LastEditors
  <!-- * @Description: In User Settings Edit -->
 * @FilePath: \大事件Day1\预习代码\bignews_63\admin\index.html
@@ -68,14 +68,29 @@
         $(function () {
             // 1.一进到后台首页,就应该获取登录的管理员的个人信息,显示在页面上
             // 1.1 发送ajax请求,获取个人信息
+            // 原生JS发请求带token
+            // let xhr = new XMLHttpRequest();
+            // xhr.open('get', 'http://localhost:8080/api/v1/admin/user/info')
+            // // 如何把token给带过去
+            // 键写什么右后端决定,值就是你localStorage里面的token
+            // xhr.setRequestHeader('Authorization', localStorage.getItem('token'))
+            // xhr.onload = function () {
+            //     console.log(xhr.response);
+            // }
+            // xhr.send()
+            // JQuery发请求
             $.ajax({
                 url: 'http://localhost:8080/api/v1/admin/user/info',
-                data: {
-                    nickname: 1231,
-                    userPic: 1231
+                headers: {
+                    Authorization: localStorage.getItem('token')
                 },
                 success: function (backData) {
-                    console.log(backData);
+                    if (backData.code == 200) {
+                        // console.log(backData);
+                        $('.user_info>img').attr('src', backData.data.userPic)
+                        $('.user_center_link>img').attr('src', backData.data.userPic)
+                        $('.user_info>i').text(backData.data.nickname)
+                    }
                 }
             })
             // 1.2 个人信息显示在页面上
