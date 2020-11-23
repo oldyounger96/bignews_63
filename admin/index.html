@@ -1,9 +1,9 @@
 <!--
  * @Author: your name
  * @Date: 2020-11-20 20:25:01
- * @LastEditTime: 2020-11-21 18:28:58
+ * @LastEditTime: 2020-11-23 14:47:14
  * @LastEditors: Please set LastEditors
- <!-- * @Description: In User Settings Edit -->
+ * @Description: In User Settings Edit
 * @FilePath: \大事件Day1\预习代码\bignews_63\admin\index.html
 -->
 <!DOCTYPE html>
@@ -28,7 +28,7 @@
         <a href="#" class="logo"><img src="images/logo02.png" alt="logo"></a>
         <div class="user_info" id="suibian">
             <img src="images/2.jpg" alt="person">
-            <span>欢迎&nbsp;&nbsp;李思思</span>
+            <span>欢迎&nbsp;&nbsp; <i style="font-style: normal;">李思思</i> </span>
             <b>管理员</b>
         </div>
         <!-- 左侧导航栏 -->
@@ -107,7 +107,7 @@
                         // console.log(backData);
                         $('.user_info>img').attr('src', backData.data.userPic)
                         $('.user_center_link>img').attr('src', backData.data.userPic)
-                        $('.user_info>i').text(backData.data.nickname)
+                        $('.user_info i').text(backData.data.nickname)
                     }
                 }
             })

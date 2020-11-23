@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2020-11-21 15:59:51
- * @LastEditTime: 2020-11-23 12:03:32
+ * @LastEditTime: 2020-11-23 15:28:56
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \大事件Day1e:\111前端学习集合\大事件(天)\大事件Day2\bignews_63\admin\article_category.html
@@ -102,7 +102,7 @@
             <td>{{v.slug}}</td>
             <td class="text-center">
                 <a href="javascript:void(0)" data-id="{{v.id}}" data-toggle="modal" data-target="#myModal" class=" btn btn-info btn-xs" >编辑</a>
-                <a href="javascript:void(0)" data-id="{{v.id}}" class="btn btn-danger btn-xs">删除</a>
+                <a href="javascript:void(0)" data-id="{{v.id}}" class="btn btn-danger btn-xs " id="btnDelete1" >删除</a>
             </td>
         </tr>
         {{/each}}
@@ -139,8 +139,11 @@
                     $('#btnAddText').text('新增').addClass('btn-success').removeClass('btn-info')
                     // $('#btnAddText').css('backgroundColor', 'green')
                     // 点击新增按钮让模态框显示内容为空
-                    $('#recipient-name').val('')
-                    $('#message-text').val('')
+                    // $('#recipient-name').val('')
+                    // $('#message-text').val('')
+
+                    // form表单的reset()方法可清除form带有name属性的val值
+                    $('#myModal form')[0].reset()
 
 
                 } else {
@@ -225,6 +228,26 @@
                 $('#myModal').modal('hide')
             })
 
+            // 4.给删除按钮 设置点击事件
+            $('tbody').on('click', '#btnDelete1', function (e) {
+                e.preventDefault()
+                if (confirm('你确定要删除吗')) {
+                    $.ajax({
+                        type: 'post',
+                        url: BigNew.category_delete,
+                        data: {
+                            id: $(this).attr('data-id')
+                        },
+                        success: function (backData) {
+                            console.log(backData);
+                            if (backData.code == 204) {
+                                alert('删除成功')
+                                getData()
+                            }
+                        }
+                    })
+                }
+            })
         })
     </script>
 </body>

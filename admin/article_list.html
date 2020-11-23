@@ -1,3 +1,11 @@
+<!--
+ * @Author: your name
+ * @Date: 2020-11-23 14:32:45
+ * @LastEditTime: 2020-11-23 17:58:26
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: \大事件Day1e:\111前端学习集合\大事件(天)\大事件Day3\bignews_63\admin\article_list.html
+-->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -11,6 +19,7 @@
     <link rel="stylesheet" href="./css/iconfont.css">
     <link rel="stylesheet" href="./css/main.css">
     <script src="./libs/jquery-1.12.4.min.js"></script>
+    <script src="./libs/bootstrap/js/bootstrap.min.js"></script>
     <!-- 引入模板引擎js文件 -->
     <script src="./libs/template-web.js"></script>
 </head>
@@ -69,9 +78,222 @@
                 </tbody>
             </table>
             <div class="row text-center">
+                <!-- 分页插件结构 -->
+                <ul class="pagination" id="pagination"></ul>
             </div>
         </div>
     </div>
+
+    <script src="./js/http.js"></script>
+    <script src="../其他资料/插件文件/twbs-pagination/jquery.twbsPagination.min.js"></script>
+    <!-- 准备一个 文章类别 模板 -->
+    <script id="temp" type="text/html">
+        <option value="">所有分类</option>
+        {{each data v}}
+        <option value="{{v.id}}">{{v.name}}</option>
+        {{/each}}
+    </script>
+
+    <script id="temp1" type="text/html">
+        {{each data.data v}}
+        <tr>
+            <td>{{v.title}}</td>
+            <td>{{v.author}}</td>
+            <td>{{v.category}}</td>
+            <td class="text-center">{{v.date}}</td>
+            <td class="text-center">{{v.state}}</td>
+            <td class="text-center">
+                <a href="article_edit.html" data-id="{{v.id}}" class="btn btn-default btn-xs">编辑</a>
+                <a href="javascript:void(0);" data-id="{{v.id}}" class="btn btn-danger btn-xs delete">删除</a>
+            </td>
+        </tr>
+        {{/each}}
+    </script>
+    <script>
+        // 入口函数
+        $(function () {
+            // 1.发送ajax请求,获取所有的文章类别然后通过模板引擎的方式渲染到这个下拉菜单中
+            function getData() {
+                $.ajax({
+                    url: BigNew.category_list,
+                    success: function (backData) {
+                        // console.log(backData);
+                        if (backData.code == 200) {
+                            // 通过模板引擎 渲染到下拉菜单中
+                            $('#selCategory').html(template('temp', backData))
+                        }
+                    }
+                })
+            }
+            getData()
+
+            // 2.进到页面.发送ajax请求,获取默认的文章类别/文章状态 下的所有文章
+            function getData1(myPage, callback) {
+                $.ajax({
+                    url: BigNew.article_query,
+                    data: {
+                        type: $('#selCategory').val(),//选中的文章类别,默认是所有分类
+                        state: $('#selStatus').val(),//状态(草稿/已发布),默认是所有的状态
+                        page: myPage,
+                        perpage: 4
+                    },
+                    success: function (backData) {
+                        console.log(backData);
+                        if (backData.code == 200) {
+                            // 调用模板引擎核心
+                            $('tbody').html(template('temp1', backData))
+
+                            // 分页插件的方法
+                            if (callback != null) {
+                                callback(backData);//把获取回来的数据在调用callback的时候作为实参传递过来
+                            }
+
+
+                        }
+                    }
+                })
+            }
+            getData1(1, function (backData) {
+                $('#pagination').twbsPagination({
+                    totalPages: backData.data.totalPage,//总页数
+                    visiblePages: 8,//最大可见页数
+                    first: '首页',
+                    prev: '上一页',
+                    next: '下一页',
+                    last: '尾页',
+                    // 页码点击的回调函数事件
+                    onPageClick: function (event, page) {
+                        // console.log(event);
+                        // console.log(page);//是当前点击的页码数
+                        // 重新发送ajax请求,把当前点击的这个页码传进去
+                        getData1(page, null);//调用我们自己封装的函数
+                    }
+                });
+            })
+
+
+
+            // 3.点击筛选按钮,获取符合条件的文章,渲染到页面上
+            $('#btnSearch').on('click', function (e) {
+                e.preventDefault();//阻止默认的提交行为
+                // getData1()
+                getData1(1, function (backData) {
+                    $('#pagination').twbsPagination('changeTotalPages', backData.data.totalPage, 1)
+                })
+            })
+
+
+
+
+
+
+
+
+
+
+            // --------------------------------------------------------------------------------
+            // $(function () {
+            // // 1.发送ajax请求,获取所有的文章类别然后通过模板引擎的方式渲染到这个下拉菜单中
+            // function getData() {
+            //     $.ajax({
+            //         url: BigNew.category_list,
+            //         success: function (backData) {
+            //             // console.log(backData);
+            //             if (backData.code == 200) {
+            //                 // 通过模板引擎 渲染到下拉菜单中
+            //                 $('#selCategory').html(template('temp', backData))
+            //             }
+            //         }
+            //     })
+            // }
+            // getData()
+
+            // // 2.进到页面.发送ajax请求,获取默认的文章类别/文章状态 下的所有文章
+            // function getData1() {
+            //     $.ajax({
+            //         url: BigNew.article_query,
+            //         data: {
+            //             type: $('#selCategory').val(),//选中的文章类别,默认是所有分类
+            //             state: $('#selStatus').val(),//状态(草稿/已发布),默认是所有的状态
+            //             page: 1,
+            //             perpage: 4
+            //         },
+            //         success: function (backData) {
+            //             console.log(backData);
+            //             if (backData.code == 200) {
+            //                 // 调用模板引擎核心
+            //                 $('tbody').html(template('temp1', backData))
+
+            //                 // 分页插件的方法
+            //                 $('#pagination').twbsPagination({
+            //                     totalPages: backData.data.totalPage,//总页数
+            //                     visiblePages: 8,//最大可见页数
+            //                     first: '首页',
+            //                     prev: '上一页',
+            //                     next: '下一页',
+            //                     last: '尾页',
+            //                     // 页码点击的回调函数事件
+            //                     onPageClick: function (event, page) {
+            //                         // console.log(event);
+            //                         // console.log(page);//是当前点击的页码数
+            //                         // 重新发送ajax请求,把当前点击的这个页码传进去
+            //                         $.ajax({
+            //                             url: BigNew.article_query,
+            //                             data: {
+            //                                 type: $('#selCategory').val(),//选中的文章类别,默认是所有分类
+            //                                 state: $('#selStatus').val(),//状态(草稿/已发布),默认是所有的状态
+            //                                 page: page,//此时这里是点击的页码
+            //                                 perpage: 4
+            //                             },
+            //                             success: function (backData) {
+            //                                 // console.log(backData);
+            //                                 if (backData.code == 200) {
+            //                                     // 调用模板引擎核心
+            //                                     $('tbody').html(template('temp1', backData))
+            //                                 }
+            //                             }
+            //                         })
+            //                     }
+            //                 });
+
+            //             }
+            //         }
+            //     })
+            // }
+            // getData1()
+
+
+            // // 3.点击筛选按钮,获取符合条件的文章,渲染到页面上
+            // $('#btnSearch').on('click', function (e) {
+            //     e.preventDefault();//阻止默认的提交行为
+            //     // getData1()
+            //     $.ajax({
+            //         url: BigNew.article_query,
+            //         data: {
+            //             type: $('#selCategory').val(),//选中的文章类别,默认是所有分类
+            //             state: $('#selStatus').val(),//状态(草稿/已发布),默认是所有的状态
+            //             page: 1,
+            //             perpage: 4
+            //         },
+            //         success: function (backData) {
+            //             console.log(backData);
+            //             if (backData.code == 200) {
+            //                 // 调用模板引擎核心
+            //                 $('tbody').html(template('temp1', backData))
+
+            //                 // 分页插件的方法
+            //                 // 点击筛选按钮,由于改变了筛选条件,所以筛选出来的数据总页数会发生改变
+            //                 // 所以要根据新的总页数,来重新绘制 分页结构
+            //                 $('#pagination').twbsPagination('changeTotalPages', backData.data.totalPage, 1)
+
+            //             }
+            //         }
+            //     })
+            // })
+
+
+        })
+    </script>
 </body>
 
 </html>
