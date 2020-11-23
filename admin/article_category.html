@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2020-11-21 15:59:51
- * @LastEditTime: 2020-11-21 21:10:49
+ * @LastEditTime: 2020-11-23 12:03:32
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \大事件Day1e:\111前端学习集合\大事件(天)\大事件Day2\bignews_63\admin\article_category.html
@@ -71,13 +71,15 @@
                 </div>
                 <div class="modal-body">
                     <form>
+                        <!-- 隐藏域 是用来保存 编辑文章类别的id的 -->
+                        <input type="hidden" id="categoryId" name="id">
                         <div class="form-group">
                             <label for="recipient-name" class="control-label">分类名称:</label>
-                            <input type="text" class="form-control" id="recipient-name">
+                            <input type="text" class="form-control" id="recipient-name" name="name">
                         </div>
                         <div class="form-group">
                             <label for="message-text" class="control-label">分类别名:</label>
-                            <input class="form-control" id="message-text"></input>
+                            <input class="form-control" id="message-text" name="slug"></input>
                         </div>
                     </form>
                 </div>
@@ -89,6 +91,8 @@
         </div>
     </div>
 
+
+
     <script src="./js/http.js"></script>
     <!-- 准备一个模板 -->
     <script id="temp" type="text/html">
@@ -97,7 +101,7 @@
             <td>{{v.name}}</td>
             <td>{{v.slug}}</td>
             <td class="text-center">
-                <a href="javascript:void(0)" data-toggle="modal" data-target="#myModal" class=" btn btn-info btn-xs">编辑</a>
+                <a href="javascript:void(0)" data-id="{{v.id}}" data-toggle="modal" data-target="#myModal" class=" btn btn-info btn-xs" >编辑</a>
                 <a href="javascript:void(0)" data-id="{{v.id}}" class="btn btn-danger btn-xs">删除</a>
             </td>
         </tr>
@@ -134,10 +138,21 @@
                     $('#myModalLabel').text('新增分类')
                     $('#btnAddText').text('新增').addClass('btn-success').removeClass('btn-info')
                     // $('#btnAddText').css('backgroundColor', 'green')
+                    // 点击新增按钮让模态框显示内容为空
+                    $('#recipient-name').val('')
+                    $('#message-text').val('')
+
+
                 } else {
                     // 点击编辑分来弹出的
                     $('#myModalLabel').text('编辑分类')
                     $('#btnAddText').text('编辑').addClass('btn-info').removeClass('btn-success')
+
+                    // 编辑的第一步
+                    // 把需要编辑的当前这一行的文章类别名称和别名 显示在模态框中
+                    $('#recipient-name').val($(e.relatedTarget).parent().prev().prev().text().trim())
+                    $('#message-text').val($(e.relatedTarget).parent().prev().text().trim())
+                    $('#categoryId').val($(e.relatedTarget).attr('data-id'))
                 }
             })
 
@@ -153,6 +168,7 @@
                         alert('输入不能为空')
                         return
                     }
+                    // 发送ajax请求,完成新增
                     $.ajax({
                         type: 'post',
                         url: BigNew.category_add,
@@ -168,21 +184,49 @@
                                 alert('新增成功')
                                 // 更新页面中的数据
                                 getData()
-                                // 隐藏模态框
-                                // 清空模态框中的内容
-                                $('#message-text').val('')
-                                $('#recipient-name').val('')
-                                $('#myModal').modal('hide')
                             }
                         }
                     })
                 } else {
                     // 编辑
+                    // 如果上面获取的不是三个,而是三十个,哪像上面那样一个个去获取就会很累很烦
+                    // 所以我们就想到了FormData
+                    // 但是有个问题:FormData必须要后端支持
+                    // 我们现在使用的整个编辑类别接口 后端并没有说可以使用FormData,那就不能用
+                    // 那怎么办?只能一个个去获取?
+                    // 不是JQuery很贴心,JQuety为程序员准备了一个方法serialize
+                    // 这个额方法也是获取 form表单里面带有name属性的标签的值的
+                    let data = $('#myModal form').serialize()
+                    console.log(data);
+                    // return
+                    $.ajax({
+                        type: 'post',
+                        url: BigNew.category_edit,
+                        // data: {
+                        //     id: $('#categoryId').val(),
+                        //     name: $('#message-text').val(),
+                        //     slug: $('#message-text').val()
+                        // },
+                        data: data,
+                        success: function (backData) {
+                            if (backData.code == 200) {
+                                console.log(backData);
+                                getData()
+                            }
+                        }
+                    })
 
                 }
+
+                // 清空模态框中的内容
+                $('#recipient-name').val('')
+                $('#message-text').val('')
+                // 隐藏模态框
+                $('#myModal').modal('hide')
             })
 
         })
     </script>
+</body>
 
 </html>
