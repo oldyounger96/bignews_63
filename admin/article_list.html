@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2020-11-23 14:32:45
- * @LastEditTime: 2020-11-23 17:58:26
+ * @LastEditTime: 2020-11-24 12:13:14
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \大事件Day1e:\111前端学习集合\大事件(天)\大事件Day3\bignews_63\admin\article_list.html
@@ -80,6 +80,7 @@
             <div class="row text-center">
                 <!-- 分页插件结构 -->
                 <ul class="pagination" id="pagination"></ul>
+                <p>没有数据</p>
             </div>
         </div>
     </div>
@@ -104,7 +105,7 @@
             <td class="text-center">{{v.state}}</td>
             <td class="text-center">
                 <a href="article_edit.html" data-id="{{v.id}}" class="btn btn-default btn-xs">编辑</a>
-                <a href="javascript:void(0);" data-id="{{v.id}}" class="btn btn-danger btn-xs delete">删除</a>
+                <a href="javascript:void(0);" data-id="{{v.id}}" class="btn btn-danger btn-xs delete" id="btnDelete">删除</a>
             </td>
         </tr>
         {{/each}}
@@ -143,9 +144,23 @@
                             // 调用模板引擎核心
                             $('tbody').html(template('temp1', backData))
 
-                            // 分页插件的方法
-                            if (callback != null) {
-                                callback(backData);//把获取回来的数据在调用callback的时候作为实参传递过来
+                            // 额外的事情
+                            // 判断响应回来有没有数据
+                            if (backData.data.data.length != 0 && callback != null) {
+                                // 有数据
+                                $('#pagination').show().next('p').hide()
+                                // 把获取回来的数据在调用callback的时候作为实参传递过来
+                                callback(backData);
+                            }
+                            //如果你当前页是1,并且发送ajax请求又没有文章数
+                            // 那就说明你这个文章分类中确实没有文章
+                            else if (backData.data.data.length == 0 && currenPage == 1) {
+                                // 没有数据
+                                $('#pagination').hide().next('p').show()
+                            } else if (backData.data.totalPage < currenPage && backData.data.data.length == 0) {
+                                currenPage -= 1
+                                $('#pagination').twbsPagination('changeTotalPages', backData.data.totalPage, currenPage)
+
                             }
 
 
@@ -153,6 +168,7 @@
                     }
                 })
             }
+            let currenPage;//当前页码
             getData1(1, function (backData) {
                 $('#pagination').twbsPagination({
                     totalPages: backData.data.totalPage,//总页数
@@ -167,6 +183,8 @@
                         // console.log(page);//是当前点击的页码数
                         // 重新发送ajax请求,把当前点击的这个页码传进去
                         getData1(page, null);//调用我们自己封装的函数
+
+                        currenPage = page;//给当前页码赋值
                     }
                 });
             })
@@ -177,15 +195,48 @@
             $('#btnSearch').on('click', function (e) {
                 e.preventDefault();//阻止默认的提交行为
                 // getData1()
+                currenPage = 1;
+                // console.log(currenPage);
                 getData1(1, function (backData) {
                     $('#pagination').twbsPagination('changeTotalPages', backData.data.totalPage, 1)
                 })
             })
 
+            // 4.删除文章
+            // 给删除时间设置点击事件(委托注册)
+            $('tbody').on('click', '#btnDelete', function () {
+                BigNew.article_delete
+                if (confirm('你确定要删除吗?')) {
+                    // 通过当前点击的删除按钮(a标签)的这个自定义属性(data-id)来获取当前要删除的文章
+                    // 发送ajax请求
+                    $.ajax({
+                        type: 'post',
+                        url: BigNew.article_delete,
+                        data: {
+                            id: $(this).attr('data-id')
+                        },
+                        success: function (backData) {
+                            // console.log(backData);
+                            if (backData.code == 204) {
+                                alert('删除成功')
+                                // 删除成功，要重新加载数据
+                                // 由于删除了数据,那总的页码就有可能减少
+                                // 那就应该根据新的总页码 重新生成 分页结构
+                                getData1(currenPage, function (backData) {
+                                    // 重新生成分页结构
+                                    $('#pagination').twbsPagination('changeTotalPages', backData.data.totalPage, currenPage)
+                                })
+                            }
+                        }
+                    })
+                }
+            })
 
-
-
-
+            $('#release_btn').on('click', function () {
+                // parent.$('#published>a')[0].onclick()
+                // parent.$('#published')[0].click();
+                parent.$('ul.level02>li:eq(1)').click();
+            })
 
 
 

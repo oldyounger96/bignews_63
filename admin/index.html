@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2020-11-20 20:25:01
- * @LastEditTime: 2020-11-23 14:47:14
+ * @LastEditTime: 2020-11-24 10:07:02
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
 * @FilePath: \大事件Day1\预习代码\bignews_63\admin\index.html
@@ -44,7 +44,7 @@
                 <li><a href="./article_list.html" target="main_frame"><i
                             class="iconfont icon-previewright"></i><span>文章列表</span></a>
                 </li>
-                <li><a href="./article_release.html" target="main_frame"><i
+                <li><a href="./article_release.html" target="main_frame" id="published"><i
                             class="iconfont icon-previewright"></i><span>发表文章</span></a></li>
                 <li><a href="./article_category.html" target="main_frame"><i
                             class="iconfont icon-previewright"></i><span>文章类别管理</span></a>
@@ -146,7 +146,7 @@
 
                     // b.稍晚难理解一点的做法
                     // 找到第一个二级菜单里面的a标签,触发他的点击事件
-                    // a的点击事件就会猫盘到二级菜单li,那li的事件在下面已经设置过了,所以就会有颜色了
+                    // a的点击事件就会冒泡到二级菜单li,那li的事件在下面已经设置过了,所以就会有颜色了
                     // a标签本身就有一个链接跳转,所以会跳转
                     $('ul.level02>li:eq(0)>a')[0].click();//a标签应该是一个dom元素,不然没有默认的跳转
                 }
