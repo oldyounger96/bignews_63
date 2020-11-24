@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2020-11-24 15:31:16
- * @LastEditTime: 2020-11-24 17:32:36
+ * @LastEditTime: 2020-11-24 20:35:10
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \大事件Day1e:\111前端学习集合\大事件(天)\大事件Day4\bignews_63\admin\article_release.html
@@ -114,7 +114,7 @@
                     // console.log(backData);
                     if (backData.code == 200) {
                         // 通过模板引擎 渲染到下拉菜单中
-                        $('.form-control').html(template('temp', backData))
+                        $('select.form-control').html(template('temp', backData))
                     }
                 }
             })
@@ -137,7 +137,7 @@
             // 或者 const editor = new E( document.getElementById('div1') )
             editor.create()
 
-            function getData(callback) {
+            function getData(callback, text) {
                 let fd = new FormData(document.getElementsByTagName('form')[0])
                 // 检查一下form表单里面获取数据的标签有没有name属性,以及name属性的值是否和接口的键一致
                 // 往formData对象中追加内容(富文本编辑器wangEditor获取到的正文,以及已发布)
@@ -154,7 +154,7 @@
                     success: function (backData) {
                         console.log(backData);
                         if (backData.code == 200) {
-                            alert('发表成功')
+                            alert(text)
                             window.location = './article_list.html'
                             parent.$('ul.level02>li:eq(0)')[0].click()
                         }
@@ -168,7 +168,7 @@
 
                 getData(function (fd) {
                     fd.append('state', '已发布')
-                })
+                }, '发表成功')
             })
 
             // 发布文章为草稿
@@ -177,7 +177,7 @@
                 // 创建FormData对象
                 getData(function (fd) {
                     fd.append('state', '草稿')
-                })
+                }, '保存草稿成功')
                 // let fd = new FormData(document.getElementsByTagName('form')[0])
                 // // 检查一下form表单里面获取数据的标签有没有name属性,以及name属性的值是否和接口的键一致
                 // // 往formData对象中追加内容(富文本编辑器wangEditor获取到的正文,以及已发布)
