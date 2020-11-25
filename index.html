@@ -227,6 +227,8 @@
     <script src="./js/template-web.js"></script>
     <!-- 引入jq文件 -->
     <script src="./js/jquery-1.12.4.min.js"></script>
+
+    <!-- 一.最新资讯 模板 -->
     <script id="temp" type="text/html">
         {{each data v}}
         <div class="common_news_list">
@@ -242,6 +244,7 @@
         {{/each}}
     </script>
 
+    <!-- 二.热点图新闻 模板 -->
     <script id="temp1" type="text/html">
         {{each data v}}
         {{if $index==0}}
@@ -255,6 +258,7 @@
         {{/each}}
     </script>
 
+    <!-- 三.一周热门排行 模板 -->
     <script id="temp2" type="text/html">
         {{each data v}}
         {{if $index==0}}
@@ -270,6 +274,25 @@
         </li>
         {{/each}}
     </script>
+
+    <!-- 四.最新评论 模板 -->
+    <script id="temp3" type="text/html">
+        {{each data v}}
+        <li>
+            <span>{{v.author.substring(0,1)}}</span>
+            <b><em>{{v.author}}</em>{{v.date}}-{{v.time}}说:</b>
+            <strong>{{v.intro}}</strong>
+        </li>
+        {{/each}}
+    </script>
+
+    <!-- 五.焦点评论 -->
+    <script id="temp4" type="text/html">
+        {{each data v}}
+        <li><a href="./article.html?id={{v.id}}">{{v.intro}}</a></li>
+        {{/each}}
+    </script>
+
     <script>
         $(function () {
             // 1.最新资讯(也就是最新的已发布的文章五条)
@@ -299,7 +322,7 @@
             $.ajax({
                 url: 'http://localhost:8080/api/v1/index/rank',
                 success: function (backData) {
-                    console.log(backData);
+                    // console.log(backData);
                     if (backData.code == 200) {
                         // 3.1第一种处理方式
                         // for (let i = 0; i < backData.data.length; i++) {
@@ -309,6 +332,28 @@
 
                         // 3.2第二种处理方式()
                         $('ul.hotrank_list').html(template('temp2', backData))
+                    }
+                }
+            })
+
+            // 4,最新评论
+            $.ajax({
+                url: 'http://localhost:8080/api/v1/index/latest_comment',
+                success: function (backData) {
+                    // console.log(backData);
+                    if (backData.code == 200) {
+                        $('ul.comment_list').html(template('temp3', backData))
+                    }
+                }
+            })
+
+            // 5.焦点评论
+            $.ajax({
+                url: 'http://localhost:8080/api/v1/index/attention',
+                success: function (backData) {
+                    // console.log(backData);
+                    if (backData.code == 200) {
+                        $('ul.guanzhu_list').html(template('temp4', backData))
                     }
                 }
             })
