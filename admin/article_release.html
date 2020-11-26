@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2020-11-24 15:31:16
- * @LastEditTime: 2020-11-24 20:35:10
+ * @LastEditTime: 2020-11-26 10:21:30
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \大事件Day1e:\111前端学习集合\大事件(天)\大事件Day4\bignews_63\admin\article_release.html
@@ -137,6 +137,7 @@
             // 或者 const editor = new E( document.getElementById('div1') )
             editor.create()
 
+            // 封装发布文章(已发布/草稿) 
             function getData(callback, text) {
                 let fd = new FormData(document.getElementsByTagName('form')[0])
                 // 检查一下form表单里面获取数据的标签有没有name属性,以及name属性的值是否和接口的键一致

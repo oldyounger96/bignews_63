@@ -154,6 +154,7 @@
                 })
             }, 20);
 
+            // 编辑的第二步:
             function getData(type, text) {
                 let fd = new FormData(document.getElementsByTagName('form')[0])
                 fd.append('content', editor.txt.html())
@@ -172,7 +173,7 @@
                             // window.location = './article_list.html'
                             window.history.back()
                             // 因为编辑页面 都是从文章列表页进来的
-                            // 所在在这里回退就退到文章列表页了
+                            // 所以在这里回退就退到文章列表页了
                         }
                     }
                 })
